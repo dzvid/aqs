@@ -32,11 +32,29 @@
  *
  *******************************************************************************/
 
+/*
+ * Bibliotecas utlizadas:
+ * - TinyGPS++: https://github.com/mikalhart/TinyGPSPlus
+ */
+
 #include <Arduino.h>
 #include <lmic.h>
 #include <hal/hal.h>
 #include <SPI.h>
 
+//// GPS
+// setup imports/pins
+//// END GPS
+
+//// PMS7003
+// setup imports/pins
+//// END PMS7003
+
+//// BME280
+// setup imports/pins
+//// END BME280
+
+/// ---------- LMIC -------------
 //
 // For normal use, we require that you edit the sketch to replace FILLMEIN
 // with values assigned by the TTN console. However, for regression tests,
@@ -133,6 +151,20 @@ const lmic_pinmap lmic_pins = {
 // #else
 // #error "Unknown target"
 // #endif
+
+/// ---------- END LMIC -------------
+
+//// GPS
+// setup
+// read data
+
+//// PMS7003
+// setup
+// read data
+
+//// BME280
+// setup
+// read data
 
 void printHex2(unsigned v)
 {
