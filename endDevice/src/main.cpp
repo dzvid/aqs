@@ -42,6 +42,8 @@
 #include <hal/hal.h>
 #include <lmic.h>
 
+#include "gps.h"
+
 //// GPS
 // setup imports/pins
 //// END GPS
@@ -308,32 +310,37 @@ void onEvent(ev_t ev) {
 }
 
 void setup() {
-  delay(5000);
-  while (!Serial)
-    ;
-  Serial.begin(9600);
-  Serial.println(F("Starting"));
+  // delay(5000);
+  // while (!Serial)
+  //   ;
+  // Serial.begin(115200);
+  // Serial.println(F("Starting"));
 
-#ifdef VCC_ENABLE
-  // For Pinoccio Scout boards
-  pinMode(VCC_ENABLE, OUTPUT);
-  digitalWrite(VCC_ENABLE, HIGH);
-  delay(1000);
-#endif
+  initBoard();
+  gpsSetup();
 
-  // LMIC init
-  os_init();
-  // Reset the MAC state. Session and pending data transfers will be discarded.
-  LMIC_reset();
+  // #ifdef VCC_ENABLE
+  //   // For Pinoccio Scout boards
+  //   pinMode(VCC_ENABLE, OUTPUT);
+  //   digitalWrite(VCC_ENABLE, HIGH);
+  //   delay(1000);
+  // #endif
 
-  LMIC_setLinkCheckMode(0);
-  LMIC_setDrTxpow(DR_SF7, 14);
-  LMIC_selectSubBand(1);
+  //   // LMIC init
+  //   os_init();
+  //   // Reset the MAC state. Session and pending data transfers will be discarded.
+  //   LMIC_reset();
 
-  // Start job (sending automatically starts OTAA too)
-  do_send(&sendjob);
+  //   LMIC_setLinkCheckMode(0);
+  //   LMIC_setDrTxpow(DR_SF7, 14);
+  //   LMIC_selectSubBand(1);
+
+  //   // Start job (sending automatically starts OTAA too)
+  //   do_send(&sendjob);
 }
 
 void loop() {
-  os_runloop_once();
+  // os_runloop_once();
+  TPOSITION_GPS data = getGpsData();
+  displayInfo(data);
 }
