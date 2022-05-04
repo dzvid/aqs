@@ -38,11 +38,18 @@
  */
 
 #include <Arduino.h>
+#include <HardwareSerial.h>
 #include <SPI.h>
 #include <hal/hal.h>
 #include <lmic.h>
 
+#include "PMS.h"
 #include "gps.h"
+
+HardwareSerial pmsSerial(2);
+
+PMS pms(pmsSerial);
+PMS::DATA pmsData;
 
 //// GPS
 // setup imports/pins
@@ -310,14 +317,17 @@ void onEvent(ev_t ev) {
 }
 
 void setup() {
-  // delay(5000);
+  delay(5000);
   // while (!Serial)
   //   ;
-  // Serial.begin(115200);
-  // Serial.println(F("Starting"));
+  Serial.begin(115200);
+  Serial.println(F("Starting"));
 
   initBoard();
   gpsSetup();
+
+  pmsSerial.begin(9600, SERIAL_8N1, 2, 13);
+  pms.passiveMode();  // Switch to passive mode
 
   // #ifdef VCC_ENABLE
   //   // For Pinoccio Scout boards
@@ -341,6 +351,31 @@ void setup() {
 
 void loop() {
   // os_runloop_once();
-  TPOSITION_GPS data = getGpsData();
-  displayInfo(data);
+  // TPOSITION_GPS data = getGpsData();
+  // displayInfo(data);
+
+  Serial.println("Waking up, wait 30 seconds for stable readings...");
+  pms.wakeUp();
+  delay(30000);
+
+  Serial.println("Send read request...");
+  pms.requestRead();
+
+  Serial.println("Wait max. 1 second for read...");
+  if (pms.readUntil(pmsData)) {
+    Serial.print("PM 1.0 (ug/m3): ");
+    Serial.println(pmsData.PM_AE_UG_1_0);
+
+    Serial.print("PM 2.5 (ug/m3): ");
+    Serial.println(pmsData.PM_AE_UG_2_5);
+
+    Serial.print("PM 10.0 (ug/m3): ");
+    Serial.println(pmsData.PM_AE_UG_10_0);
+  } else {
+    Serial.println("No data.");
+  }
+
+  Serial.println("Going to sleep for 5 seconds.");
+  pms.sleep();
+  delay(5000);
 }

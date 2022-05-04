@@ -152,7 +152,6 @@ bool initPMU() {
 }
 
 void initBoard() {
-  Serial.begin(115200);
   Serial.println(F("initBoard"));
   //   Serial1.begin(GPS_BAUDRATE_SERIAL, SERIAL_8N1, GPS_RX_PIN, GPS_TX_PIN);
   SPI.begin(RADIO_SCLK_PIN, RADIO_MISO_PIN, RADIO_MOSI_PIN, RADIO_CS_PIN);
