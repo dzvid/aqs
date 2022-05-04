@@ -37,14 +37,21 @@
  * - TinyGPS++: https://github.com/mikalhart/TinyGPSPlus
  */
 
+#include <Adafruit_BME280.h>
+#include <Adafruit_Sensor.h>
 #include <Arduino.h>
 #include <HardwareSerial.h>
 #include <SPI.h>
+#include <Wire.h>
 #include <hal/hal.h>
 #include <lmic.h>
 
 #include "PMS.h"
 #include "gps.h"
+
+#define SEALEVELPRESSURE_HPA (1013.25)
+
+Adafruit_BME280 bme;
 
 HardwareSerial pmsSerial(2);
 
@@ -326,6 +333,12 @@ void setup() {
   initBoard();
   gpsSetup();
 
+  if (!bme.begin(0x76)) {
+    Serial.println("Could not find a valid BME280 sensor, check wiring!");
+    while (1)
+      ;
+  }
+
   pmsSerial.begin(9600, SERIAL_8N1, 2, 13);
   pms.passiveMode();  // Switch to passive mode
 
@@ -353,6 +366,27 @@ void loop() {
   // os_runloop_once();
   // TPOSITION_GPS data = getGpsData();
   // displayInfo(data);
+
+  Serial.print("Temperature = ");
+  Serial.print(bme.readTemperature());
+  Serial.println("*C");
+
+  Serial.print("Pressure = ");
+  Serial.print(bme.readPressure() / 100.0F);
+  Serial.println("hPa");
+
+  Serial.print("Approx. Altitude = ");
+  Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
+  Serial.println("m");
+
+  Serial.print("Humidity = ");
+  Serial.print(bme.readHumidity());
+  Serial.println("%");
+
+  Serial.println();
+  delay(1000);
+
+  // PMS
 
   Serial.println("Waking up, wait 30 seconds for stable readings...");
   pms.wakeUp();
