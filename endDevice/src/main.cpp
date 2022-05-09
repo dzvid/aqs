@@ -47,6 +47,7 @@
 #include <lmic.h>
 
 #include "PMS.h"
+#include "board.h"
 #include "gps.h"
 
 #define SEALEVELPRESSURE_HPA (1013.25)
