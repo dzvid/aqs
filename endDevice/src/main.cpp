@@ -46,6 +46,7 @@
 #include <hal/hal.h>
 #include <lmic.h>
 
+#include "BmeSensor.h"
 #include "Board.h"
 #include "Gps.h"
 #include "PMS.h"
@@ -54,8 +55,7 @@
 
 Board board;
 Gps gps;
-
-Adafruit_BME280 bme;
+BmeSensor bme;
 
 HardwareSerial pmsSerial(2);
 
@@ -338,16 +338,15 @@ void setup() {
 
   gps.init();
 
-  // BME
-  if (!bme.begin(0x76)) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
-    while (1)
-      ;
-  }
+  bme.init();
 
   // PMS
   pmsSerial.begin(9600, SERIAL_8N1, 2, 13);
   pms.passiveMode();  // Switch to passive mode
+
+  Serial.println("Waking up, wait 30 seconds for stable readings...");
+  pms.wakeUp();
+  delay(30000);
 
   // #ifdef VCC_ENABLE
   //   // For Pinoccio Scout boards
@@ -375,31 +374,10 @@ void loop() {
   // displayInfo(data);
 
   // BME
-  Serial.print("Temperature = ");
-  Serial.print(bme.readTemperature());
-  Serial.println("*C");
-
-  Serial.print("Pressure = ");
-  Serial.print(bme.readPressure() / 100.0F);
-  Serial.println("hPa");
-
-  Serial.print("Approx. Altitude = ");
-  Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
-  Serial.println("m");
-
-  Serial.print("Humidity = ");
-  Serial.print(bme.readHumidity());
-  Serial.println("%");
-
-  Serial.println();
-  delay(1000);
+  bme.getReading();
 
   // PMS
-  Serial.println("Waking up, wait 30 seconds for stable readings...");
-  pms.wakeUp();
-  delay(30000);
-
-  Serial.println("Send read request...");
+  Serial.println("Send PMS read request...");
   pms.requestRead();
 
   Serial.println("Wait max. 1 second for read...");
