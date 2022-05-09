@@ -133,20 +133,26 @@ bool initPMU() {
 
   /*
    *   Turn off unused power sources to save power
+   *
+   *   PMU.setPowerOutPut(AXP192_DCDC2, AXP202_OFF);
+   *   PMU.setPowerOutPut(AXP192_LDO2, AXP202_OFF);
+   *   PMU.setPowerOutPut(AXP192_LDO3, AXP202_OFF);
+   *   PMU.setPowerOutPut(AXP192_EXTEN, AXP202_OFF);
+   *
    * **/
-  PMU.setPowerOutPut(AXP192_DCDC2, AXP202_OFF);
-  PMU.setPowerOutPut(AXP192_LDO2, AXP202_OFF);
-  PMU.setPowerOutPut(AXP192_LDO3, AXP202_OFF);
-  PMU.setPowerOutPut(AXP192_EXTEN, AXP202_OFF);
+
+  PMU.setPowerOutPut(AXP192_LDO2, AXP202_ON);
+  PMU.setPowerOutPut(AXP192_LDO3, AXP202_ON);
+  PMU.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
+  PMU.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
+  PMU.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
 
   /*
    * Set the power of LoRa and GPS module to 3.3V
    **/
-  PMU.setLDO2Voltage(3300);  // LoRa VDD
-  PMU.setLDO3Voltage(3300);  // GPS  VDD
-
-  PMU.setPowerOutPut(AXP192_LDO2, AXP202_ON);
-  PMU.setPowerOutPut(AXP192_LDO3, AXP202_ON);
+  PMU.setDCDC1Voltage(3300);  // 3.3V pin
+  PMU.setLDO2Voltage(3300);   // LoRa VDD
+  PMU.setLDO3Voltage(3300);   // GPS  VDD
 
   return true;
 }
