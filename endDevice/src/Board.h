@@ -17,7 +17,12 @@
 #define RADIO_DIO1_PIN 33
 #define RADIO_BUSY_PIN 32
 
-bool initPMU();
-void initBoard();
+class Board {
+ public:
+  Board();
+
+  bool initPMU();
+  void init();
+};
 
 #endif /* _BOARD_H_ */

@@ -1,4 +1,4 @@
-#include "board.h"
+#include "Board.h"
 
 #include <SPI.h>
 #include <Wire.h>
@@ -6,7 +6,9 @@
 
 AXP20X_Class PMU;
 
-bool initPMU() {
+Board::Board() {}
+
+bool Board::initPMU() {
   Wire.begin(I2C_SDA, I2C_SCL);
 
   if (PMU.begin(Wire, AXP192_SLAVE_ADDRESS) == AXP_FAIL) {
@@ -53,16 +55,19 @@ bool initPMU() {
   return true;
 }
 
-void initBoard() {
+void Board::init() {
+  Serial.begin(115200);
   Serial.println(F("initBoard"));
   SPI.begin(RADIO_SCLK_PIN, RADIO_MISO_PIN, RADIO_MOSI_PIN, RADIO_CS_PIN);
   Serial.println("AXP192 initialized...");
-  bool energyStartup = initPMU();
+  bool energyStartup = Board::initPMU();
 
   if (energyStartup) {
     Serial.println("AXP192 initialized...OK");
   } else {
     Serial.println("AXP192 initialized...FAIL");
+    while (1)
+      ;
   }
 
   // When the power is turned on, a delay is required.
