@@ -25,9 +25,13 @@ typedef struct
   int seconds = 0;
 } TPOSITION_GPS;
 
-static void gps_loop();
-void gpsSetup();
-TPOSITION_GPS getGpsData();
-void displayInfo(TPOSITION_GPS gps_data);
+class Gps {
+ public:
+  Gps();
+  void init();
+  static void gps_loop();
+  TPOSITION_GPS getGpsData();
+  void displayInfo(TPOSITION_GPS gps_data);
+};
 
 #endif /* _GPS_H_ */

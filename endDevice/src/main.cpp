@@ -47,12 +47,13 @@
 #include <lmic.h>
 
 #include "Board.h"
+#include "Gps.h"
 #include "PMS.h"
-#include "gps.h"
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 Board board;
+Gps gps;
 
 Adafruit_BME280 bme;
 
@@ -335,7 +336,7 @@ void setup() {
 
   board.init();
 
-  gpsSetup();
+  gps.init();
 
   // BME
   if (!bme.begin(0x76)) {

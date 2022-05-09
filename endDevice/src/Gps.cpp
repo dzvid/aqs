@@ -3,7 +3,7 @@
   Base on TinyGPSPlus //https://github.com/mikalhart/TinyGPSPlus
 */
 
-#include "gps.h"
+#include "Gps.h"
 
 #include <TinyGPS++.h>
 
@@ -23,11 +23,13 @@ static void gps_loop() {
   }
 }
 
-void gpsSetup() {
+Gps::Gps() {}
+
+void Gps::init() {
   _serial_gps.begin(GPS_BAUDRATE_SERIAL, SERIAL_8N1, GPS_RX_PIN, GPS_TX_PIN);
 }
 
-TPOSITION_GPS getGpsData() {
+TPOSITION_GPS Gps::getGpsData() {
   TPOSITION_GPS currentGpsData;
 
   while (_serial_gps.available() > 0) {
@@ -58,7 +60,7 @@ TPOSITION_GPS getGpsData() {
   return currentGpsData;
 }
 
-void displayInfo(TPOSITION_GPS gps_data) {
+void Gps::displayInfo(TPOSITION_GPS gps_data) {
   if (!gps_data.readSuccess) {
     Serial.print(F("INVALID "));
   }
