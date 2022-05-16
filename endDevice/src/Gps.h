@@ -23,15 +23,14 @@ typedef struct
   int hours = 0;
   int minutes = 0;
   int seconds = 0;
-} TPOSITION_GPS;
+} TGPS_DATA;
 
 class Gps {
  public:
   Gps();
   void init();
-  static void gps_loop();
-  TPOSITION_GPS getGpsData();
-  void displayInfo(TPOSITION_GPS gps_data);
+  TGPS_DATA getReading();
+  void displayData(TGPS_DATA gpsData);
 };
 
 #endif /* _GPS_H_ */

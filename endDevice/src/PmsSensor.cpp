@@ -42,3 +42,15 @@ TPMS_DATA PmsSensor::getReading() {
   Serial.println("PMS:: Sleep mode.");
   return reading;
 }
+
+void PmsSensor::displayData(TPMS_DATA pmsData) {
+  if (pmsData.readSuccess) {
+    Serial.print("PM 2.5 (ug/m3): ");
+    Serial.println(pmsData.pm2_5);
+
+    Serial.print("PM 10.0 (ug/m3): ");
+    Serial.println(pmsData.pm10);
+  } else {
+    Serial.println("PMS:: No data.");
+  }
+}

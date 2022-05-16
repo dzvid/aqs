@@ -11,26 +11,14 @@ HardwareSerial _serial_gps(SERIAL_GPS);
 
 TinyGPSPlus _gps;
 
-static void gps_loop() {
-  while (_serial_gps.available()) {
-    _gps.encode(_serial_gps.read());
-  }
-
-  if (millis() > 5000 && _gps.charsProcessed() < 10) {
-    Serial.println(F("No GPS detected: check wiring."));
-    while (true)
-      ;
-  }
-}
-
 Gps::Gps() {}
 
 void Gps::init() {
   _serial_gps.begin(GPS_BAUDRATE_SERIAL, SERIAL_8N1, GPS_RX_PIN, GPS_TX_PIN);
 }
 
-TPOSITION_GPS Gps::getGpsData() {
-  TPOSITION_GPS currentGpsData;
+TGPS_DATA Gps::getReading() {
+  TGPS_DATA currentGpsData;
 
   while (_serial_gps.available() > 0) {
     if (_gps.encode(_serial_gps.read())) {
@@ -60,52 +48,47 @@ TPOSITION_GPS Gps::getGpsData() {
   return currentGpsData;
 }
 
-void Gps::displayInfo(TPOSITION_GPS gps_data) {
-  if (!gps_data.readSuccess) {
-    Serial.print(F("INVALID "));
+void Gps::displayData(TGPS_DATA gpsData) {
+  if (gpsData.readSuccess) {
+    Serial.print(F("Location: "));
+    Serial.print(gpsData.latitude, 6);
+    Serial.print(F(","));
+    Serial.print(gpsData.latitude, 6);
+
+    Serial.print(F("  Date/Time: "));
+    Serial.print(gpsData.month);
+    Serial.print(F("/"));
+    Serial.print(gpsData.day);
+    Serial.print(F("/"));
+    Serial.print(gpsData.year);
+
+    Serial.print(F(" "));
+    Serial.print(gpsData.hours);
+    Serial.print(F(":"));
+    Serial.print(gpsData.minutes);
+    Serial.print(F(":"));
+    Serial.print(gpsData.seconds);
+    Serial.println();
+  } else {
+    Serial.println("GPS:: No data.");
+    Serial.print(F("Location: "));
+    Serial.print(gpsData.latitude, 6);
+    Serial.print(F(","));
+    Serial.print(gpsData.latitude, 6);
+
+    Serial.print(F("  Date/Time: "));
+    Serial.print(gpsData.month);
+    Serial.print(F("/"));
+    Serial.print(gpsData.day);
+    Serial.print(F("/"));
+    Serial.print(gpsData.year);
+
+    Serial.print(F(" "));
+    Serial.print(gpsData.hours);
+    Serial.print(F(":"));
+    Serial.print(gpsData.minutes);
+    Serial.print(F(":"));
+    Serial.print(gpsData.seconds);
+    Serial.println();
   }
-
-  Serial.print(F("Location: "));
-  Serial.print(gps_data.latitude, 6);
-  Serial.print(F(","));
-  Serial.print(gps_data.latitude, 6);
-
-  Serial.print(F("  Date/Time: "));
-  Serial.print(gps_data.month);
-  Serial.print(F("/"));
-  Serial.print(gps_data.day);
-  Serial.print(F("/"));
-  Serial.print(gps_data.year);
-
-  Serial.print(F(" "));
-  Serial.print(gps_data.hours);
-  Serial.print(F(":"));
-  Serial.print(gps_data.minutes);
-  Serial.print(F(":"));
-  Serial.print(gps_data.seconds);
-  // if (gps_data.readSuccess) {
-  //   Serial.print(F("Location: "));
-  //   Serial.print(gps_data.latitude, 6);
-  //   Serial.print(F(","));
-  //   Serial.print(gps_data.latitude, 6);
-
-  //   Serial.print(F("  Date/Time: "));
-  //   Serial.print(gps_data.month);
-  //   Serial.print(F("/"));
-  //   Serial.print(gps_data.day);
-  //   Serial.print(F("/"));
-  //   Serial.print(gps_data.year);
-
-  //   Serial.print(F(" "));
-  //   Serial.print(gps_data.hours);
-  //   Serial.print(F(":"));
-  //   Serial.print(gps_data.minutes);
-  //   Serial.print(F(":"));
-  //   Serial.print(gps_data.seconds);
-  //   Serial.print(F("."));
-  // } else {
-  //   Serial.print(F("INVALID"));
-  // }
-
-  Serial.println();
 }

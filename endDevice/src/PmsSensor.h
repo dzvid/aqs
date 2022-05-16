@@ -20,6 +20,7 @@ class PmsSensor {
   PmsSensor();
   void init();
   TPMS_DATA getReading();
+  void displayData(TPMS_DATA pmsData);
 };
 
 #endif /* _PMS_SENSOR_H_ */

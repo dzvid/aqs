@@ -21,6 +21,7 @@ class BmeSensor {
   BmeSensor();
   void init();
   TBME_DATA getReading();
+  void displayData(TBME_DATA bmeData);
 
  private:
   Adafruit_BME280 _bme;

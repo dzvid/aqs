@@ -39,3 +39,23 @@ TBME_DATA BmeSensor::getReading() {
 
   return reading;
 }
+
+void BmeSensor::displayData(TBME_DATA bmeData) {
+  if (bmeData.readSuccess) {
+    Serial.print("Temperature = ");
+    Serial.print(bmeData.temperature);
+    Serial.println("*C");
+
+    Serial.print("Pressure = ");
+    Serial.print(bmeData.pressure);
+    Serial.println("hPa");
+
+    Serial.print("Humidity = ");
+    Serial.print(bmeData.humidity);
+    Serial.println("%");
+
+    Serial.println();
+  } else {
+    Serial.println("BME:: No data.");
+  }
+}

@@ -362,37 +362,16 @@ void setup() {
 
 void loop() {
   // os_runloop_once();
-  // TPOSITION_GPS data = getGpsData();
-  // displayInfo(data);
+
+  // GPS
+  TGPS_DATA gpsReading = gps.getReading();
+  gps.displayData(gpsReading);
 
   // BME
   TBME_DATA bmeReading = bme.getReading();
-
-  Serial.print("Temperature = ");
-  Serial.print(bmeReading.temperature);
-  Serial.println("*C");
-
-  Serial.print("Pressure = ");
-  Serial.print(bmeReading.pressure);
-  Serial.println("hPa");
-
-  Serial.print("Humidity = ");
-  Serial.print(bmeReading.humidity);
-  Serial.println("%");
-
-  Serial.println();
+  bme.displayData(bmeReading);
 
   // PMS
-  // readPms();
   TPMS_DATA pmsReading = pmsSensor.getReading();
-
-  if (pmsReading.readSuccess) {
-    Serial.print("PM 2.5 (ug/m3): ");
-    Serial.println(pmsReading.pm2_5);
-
-    Serial.print("PM 10.0 (ug/m3): ");
-    Serial.println(pmsReading.pm10);
-  } else {
-    Serial.println("PMS:: No data.");
-  }
+  pmsSensor.displayData(pmsReading);
 }
