@@ -9,11 +9,18 @@
 #define BME280_I2C_ADDR 0x76
 #define SEALEVELPRESSURE_HPA (1013.25)
 
+typedef struct {
+  bool readSuccess = false;
+  float temperature;
+  float pressure;
+  float humidity;
+} TBME_DATA;
+
 class BmeSensor {
  public:
   BmeSensor();
   void init();
-  void getReading();
+  TBME_DATA getReading();
 
  private:
   Adafruit_BME280 _bme;

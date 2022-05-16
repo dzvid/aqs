@@ -32,11 +32,6 @@
  *
  *******************************************************************************/
 
-/*
- * Bibliotecas utlizadas:
- * - TinyGPS++: https://github.com/mikalhart/TinyGPSPlus
- */
-
 #include <Adafruit_BME280.h>
 #include <Adafruit_Sensor.h>
 #include <Arduino.h>
@@ -49,18 +44,21 @@
 #include "BmeSensor.h"
 #include "Board.h"
 #include "Gps.h"
-#include "PMS.h"
+#include "PmsSensor.h"
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 Board board;
 Gps gps;
 BmeSensor bme;
+PmsSensor pmsSensor;
 
 HardwareSerial pmsSerial(2);
 
-PMS pms(pmsSerial);
-PMS::DATA pmsData;
+// PMS pms(pmsSerial);
+// PMS::DATA pmsData;
+
+bool started = false;
 
 //// GPS
 // setup imports/pins
@@ -340,13 +338,7 @@ void setup() {
 
   bme.init();
 
-  // PMS
-  pmsSerial.begin(9600, SERIAL_8N1, 2, 13);
-  pms.passiveMode();  // Switch to passive mode
-
-  Serial.println("Waking up, wait 30 seconds for stable readings...");
-  pms.wakeUp();
-  delay(30000);
+  pmsSensor.init();
 
   // #ifdef VCC_ENABLE
   //   // For Pinoccio Scout boards
@@ -374,27 +366,33 @@ void loop() {
   // displayInfo(data);
 
   // BME
-  bme.getReading();
+  TBME_DATA bmeReading = bme.getReading();
+
+  Serial.print("Temperature = ");
+  Serial.print(bmeReading.temperature);
+  Serial.println("*C");
+
+  Serial.print("Pressure = ");
+  Serial.print(bmeReading.pressure);
+  Serial.println("hPa");
+
+  Serial.print("Humidity = ");
+  Serial.print(bmeReading.humidity);
+  Serial.println("%");
+
+  Serial.println();
 
   // PMS
-  Serial.println("Send PMS read request...");
-  pms.requestRead();
+  // readPms();
+  TPMS_DATA pmsReading = pmsSensor.getReading();
 
-  Serial.println("Wait max. 1 second for read...");
-  if (pms.readUntil(pmsData)) {
-    Serial.print("PM 1.0 (ug/m3): ");
-    Serial.println(pmsData.PM_AE_UG_1_0);
-
+  if (pmsReading.readSuccess) {
     Serial.print("PM 2.5 (ug/m3): ");
-    Serial.println(pmsData.PM_AE_UG_2_5);
+    Serial.println(pmsReading.pm2_5);
 
     Serial.print("PM 10.0 (ug/m3): ");
-    Serial.println(pmsData.PM_AE_UG_10_0);
+    Serial.println(pmsReading.pm10);
   } else {
-    Serial.println("No data.");
+    Serial.println("PMS:: No data.");
   }
-
-  Serial.println("Going to sleep for 5 seconds.");
-  pms.sleep();
-  delay(5000);
 }
