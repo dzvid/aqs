@@ -39,11 +39,11 @@ bool Board::initPMU() {
    *
    * **/
 
-  PMU.setPowerOutPut(AXP192_LDO2, AXP202_ON);
-  PMU.setPowerOutPut(AXP192_LDO3, AXP202_ON);
-  PMU.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
+  PMU.setPowerOutPut(AXP192_LDO2, AXP202_ON);   // LoRa main power
+  PMU.setPowerOutPut(AXP192_LDO3, AXP202_ON);   // GPS main power
+  PMU.setPowerOutPut(AXP192_DCDC2, AXP202_ON);  // 3V3 pin
   PMU.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
-  PMU.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
+  PMU.setPowerOutPut(AXP192_DCDC1, AXP202_ON);  // Enables power to ESP32 on T-beam
 
   /*
    * Set the power of LoRa and GPS module to 3.3V

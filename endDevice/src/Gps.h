@@ -4,13 +4,11 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-#define GPS_BAUDRATE_SERIAL 115200
+#define GPS_BAUDRATE_SERIAL 9600
 // GPS IS CONNECTED TO TTGO TBEAM SERIAL "1"
-#define SERIAL_GPS 1
+#define HARDWARE_SERIAL_GPS 1
 #define GPS_RX_PIN 34
 #define GPS_TX_PIN 12
-#define BUTTON_PIN 38
-#define BUTTON_PIN_MASK GPIO_SEL_38
 
 typedef struct
 {
@@ -29,7 +27,7 @@ class Gps {
  public:
   Gps();
   void init();
-  TGPS_DATA getReading();
+  TGPS_DATA getCurrentDate();
   void displayData(TGPS_DATA gpsData);
 };
 
