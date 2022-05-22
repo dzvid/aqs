@@ -73,13 +73,13 @@ static const u1_t PROGMEM APPEUI[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 void os_getArtEui(u1_t* buf) { memcpy_P(buf, APPEUI, 8); }
 
 // This should also be in little endian format, see above.
-static const u1_t PROGMEM DEVEUI[8] = {0xc4, 0xf3, 0x9a, 0x65, 0x30, 0x6c, 0xf1, 0xc4};
+static const u1_t PROGMEM DEVEUI[8] = {0x5b, 0xb1, 0x7b, 0x37, 0xe7, 0x5e, 0xc1, 0x4b};
 void os_getDevEui(u1_t* buf) { memcpy_P(buf, DEVEUI, 8); }
 
 // This key should be in big endian format (or, since it is not really a
 // number but a block of memory, endianness does not really apply). In
 // practice, a key taken from ttnctl can be copied as-is.
-static const u1_t PROGMEM APPKEY[16] = {0x93, 0x50, 0x37, 0x7e, 0x56, 0xe7, 0xe0, 0x0e, 0xb5, 0x84, 0xe9, 0xd7, 0x59, 0x6f, 0x63, 0x29};
+static const u1_t PROGMEM APPKEY[16] = {0x21, 0x16, 0x5c, 0xd6, 0x98, 0xec, 0xbe, 0xa7, 0xdd, 0x0b, 0xc9, 0x9e, 0x7d, 0x56, 0x19, 0xd9};
 void os_getDevKey(u1_t* buf) { memcpy_P(buf, APPKEY, 16); }
 
 // static uint8_t mydata[] = "Hello, world!";
@@ -310,6 +310,27 @@ void setup() {
   os_init();
   // Reset the MAC state. Session and pending data transfers will be discarded.
   LMIC_reset();
+
+  // Enables only channels 8-15
+  // First, disable channels 0-7
+  // for (int channel = 0; channel < 8; ++channel) {
+  //   LMIC_disableChannel(channel);
+  // }
+  // // Now, disable channels 16-72 (is there 72 ??)
+  // for (int channel = 16; channel < 72; ++channel) {
+  //   LMIC_disableChannel(channel);
+  // }
+
+  // Enable or disable ADR (data rate adaptation).
+  // Should be turned off if the device is not stationary (mobile).
+  // 1 is on, 0 is off.
+  LMIC_setAdrMode(1);
+
+  // NA-US and AU channels 0-71 are configured automatically
+  // but only one group of 8 should (a subband) should be active
+  // TTN recommends the second sub band, 1 in a zero based count.
+  // https://github.com/TheThingsNetwork/gateway-conf/blob/master/US-global_conf.json
+  LMIC_selectSubBand(1);
 
   // Start job (sending automatically starts OTAA too)
   do_send(&sendjob);
