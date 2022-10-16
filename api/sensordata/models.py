@@ -11,5 +11,5 @@ class SensorData(models.Model):
         return self.device_name
 
     class Meta:
-        db_table = 'chirpstack_as_events'
+        db_table = 'device_up'
         managed = False
