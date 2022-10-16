@@ -1,3 +1,4 @@
 api/.idea
+api/venv
 
 *.pyc
