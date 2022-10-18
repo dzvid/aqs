@@ -3,7 +3,7 @@ from jsonfield import JSONField
 
 
 class SensorData(models.Model):
-    id = models.CharField(primary_key=True, max_length=255)
+    id = models.UUIDField(primary_key=True)
     device_name = models.CharField(max_length=255)
     object = JSONField()
 
