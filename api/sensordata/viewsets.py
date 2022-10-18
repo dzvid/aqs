@@ -18,4 +18,4 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
     def list_sensors(self, request, *args,  **kwargs):
         sensors = self.get_queryset().values('device_name').distinct()
         serializer = SensorsSerializer(sensors, many=True)
-        return JsonResponse(serializer.data, status=HTTP_200_OK)
+        return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
