@@ -26,7 +26,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOSTS', '*')]
 
-CORS_ORIGIN_ALLOW_ALL = [os.environ.get('DJANGO_CORS_ORIGIN_ALLOW_ALL', True)]
+CORS_ORIGIN_ALLOW_ALL = os.environ.get('DJANGO_CORS_ORIGIN_ALLOW_ALL', True)
 
 # Application definition
 
