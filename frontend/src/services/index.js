@@ -1,4 +1,4 @@
-import sensors from '@/services/api/sensors';
+import sensors from '@/services/sensors';
 
 const api = {
   sensors,

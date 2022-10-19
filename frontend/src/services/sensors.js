@@ -1,7 +1,7 @@
 import httpClient from '@/plugins/axios';
 
 async function getSensors() {
-  const { data } = await httpClient.get('/sensordata/get_sensors');
+  const { data } = await httpClient.get('/sensordata/list_sensors/');
   return data;
 }
 
