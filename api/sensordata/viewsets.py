@@ -13,8 +13,18 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = []
 
     @action(methods=['get'], detail=False)
-    def list_sensors(self, request, *args,  **kwargs):
+    def list_sensors(self, request, *args, **kwargs):
         sensors = self.get_queryset().values('device_name').distinct()
         page = self.paginate_queryset(sensors)
         serializer = SensorsSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+
+    @action(methods=['get'], detail=False)
+    def get_readings(self, request, *args, **kwargs):
+        id_sensor = request.query_params.get('id_sensor', None)
+        date = request.query_params.get('date', None)
+
+        sensors = self.get_queryset().filter(device_name__isexact=id_sensor,
+                                             object__data__dt_collected_at__icontains=date)
+        serializer = SensorsSerializer(sensors, many=True)
         return self.get_paginated_response(serializer.data)
