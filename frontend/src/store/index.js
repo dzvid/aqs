@@ -7,7 +7,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     sensors: [],
-    sensorReadings: null,
+    sensorReadings: [],
   },
   getters: {},
   mutations: {
@@ -23,8 +23,8 @@ const store = new Vuex.Store({
       const { results } = await api.sensors.getSensors();
       commit('SET_SENSORS', results);
     },
-    async fetchReadingsBySensorId({ commit }) {
-      const { results } = await api.sensors.getReadingsBySensorId();
+    async fetchReadingsBySensorId({ commit }, payload) {
+      const { results } = await api.sensors.getReadingsBySensorId(payload);
       commit('SET_SENSOR_READINGS', results);
     },
   },

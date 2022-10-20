@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar app color="" flat>
+    <v-app-bar app color="secondary" flat>
       <h1>
-        <span class="text-h3 text-bold">AQS</span>
+        <span class="text-h3 text-bold white--text">AQS</span>
         <span class="text-h3 primary--text">UEA</span>
       </h1>
     </v-app-bar>
@@ -14,7 +14,7 @@
             <v-card class="" outlined>
               <v-card-title class="text-h5"> Selecione um sensor </v-card-title>
               <v-card-text>
-                <v-form>
+                <v-form ref="form" lazy-validation>
                   <v-row>
                     <v-col cols="12" sm="4" md="3" lg="2">
                       <v-select
@@ -24,7 +24,9 @@
                         item-value="device_name"
                         item-text="device_name"
                         outlined
-                        hide-details
+                        hide-details="auto"
+                        required
+                        :rules="sensorRules"
                       ></v-select>
                     </v-col>
                     <v-col cols="12" sm="4" md="3" lg="2">
@@ -38,13 +40,17 @@
                       >
                         <template v-slot:activator="{ on, attrs }">
                           <v-text-field
-                            v-model="date"
+                            v-model="dateFormatted"
                             label="Dia monitorado"
                             prepend-icon="mdi-calendar"
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            @blur="date = parseDate(dateFormatted)"
+                            :rules="dateRules"
+                            hide-details="auto"
                             outlined
+                            required
                           ></v-text-field>
                         </template>
                         <v-date-picker
@@ -54,7 +60,12 @@
                       </v-menu>
                     </v-col>
                     <v-col cols="12" sm="auto">
-                      <v-btn class="primary" depressed x-large>
+                      <v-btn
+                        class="primary"
+                        depressed
+                        x-large
+                        @click="onFetchReadingsBySensorId"
+                      >
                         {{ 'Buscar' }}
                       </v-btn>
                     </v-col>
@@ -84,48 +95,6 @@
                   </v-col>
                 </v-row>
               </v-card-text>
-
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon>mdi-send</v-icon>
-                </v-list-item-icon>
-                <v-list-item-subtitle>23 km/h</v-list-item-subtitle>
-              </v-list-item>
-
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon>mdi-cloud-download</v-icon>
-                </v-list-item-icon>
-                <v-list-item-subtitle>48%</v-list-item-subtitle>
-              </v-list-item>
-
-              <v-slider
-                v-model="time"
-                :max="6"
-                :tick-labels="labels"
-                class="mx-4"
-                ticks
-              ></v-slider>
-
-              <v-list class="transparent">
-                <v-list-item v-for="item in forecast" :key="item.day">
-                  <v-list-item-title>{{ item.day }}</v-list-item-title>
-
-                  <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
-                  </v-list-item-icon>
-
-                  <v-list-item-subtitle class="text-right">
-                    {{ item.temp }}
-                  </v-list-item-subtitle>
-                </v-list-item>
-              </v-list>
-
-              <v-divider></v-divider>
-
-              <v-card-actions>
-                <v-btn text> Full Report </v-btn>
-              </v-card-actions>
             </v-card>
           </v-col>
         </v-row>
@@ -135,16 +104,9 @@
             <v-card class="mx-auto" flat outlined>
               <v-card-title> PM 2.5 </v-card-title>
               <v-card-text>
-                <LineChartGenerator
+                <LineChart
                   :chart-options="chartOptions"
                   :chart-data="chartData"
-                  :chart-id="chartId"
-                  :dataset-id-key="datasetIdKey"
-                  :plugins="plugins"
-                  :css-classes="cssClasses"
-                  :styles="styles"
-                  :width="width"
-                  :height="height"
                 />
               </v-card-text>
             </v-card>
@@ -184,94 +146,97 @@
 </template>
 
 <script>
-import { Line as LineChartGenerator } from 'vue-chartjs/legacy';
-
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  LinearScale,
-  CategoryScale,
-  PointElement,
-} from 'chart.js';
 import { mapActions, mapState } from 'vuex';
-
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  LinearScale,
-  CategoryScale,
-  PointElement
-);
+import LineChart from '@/components/LineChart.vue';
 
 export default {
   name: 'App',
-  components: { LineChartGenerator },
-  props: {
-    chartId: {
-      type: String,
-      default: 'line-chart',
-    },
-    datasetIdKey: {
-      type: String,
-      default: 'label',
-    },
-    width: {
-      type: Number,
-      default: 400,
-    },
-    height: {
-      type: Number,
-      default: 400,
-    },
-    cssClasses: {
-      default: '',
-      type: String,
-    },
-    styles: {
-      type: Object,
-      default: () => {},
-    },
-    plugins: {
-      type: Array,
-      default: () => [],
-    },
-  },
+  components: { LineChart },
   async created() {
     await this.fetchSensors();
   },
   methods: {
-    ...mapActions(['fetchSensors']),
+    ...mapActions(['fetchSensors', 'fetchReadingsBySensorId']),
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split('-');
+      return `${day}/${month}/${year}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
+
+      const [day, month, year] = date.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    },
+    async onFetchReadingsBySensorId() {
+      if (this.$refs.form.validate()) {
+        await this.fetchReadingsBySensorId({
+          idSensor: this.sensor,
+          date: this.date,
+        });
+      }
+    },
   },
   computed: {
     ...mapState(['sensors']),
+    computedDateFormatted() {
+      return this.formatDate(this.date);
+    },
   },
-  data: () => ({
-    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
-    menu: false,
-    modal: false,
-    menu2: false,
-    sensor: null,
-    chartData: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'PM 2.5',
-          backgroundColor: '#f87979',
-          data: [40, 39, 10, 40, 39, 80, 40],
+  watch: {
+    date() {
+      this.dateFormatted = this.formatDate(this.date);
+    },
+  },
+  data() {
+    return {
+      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      dateFormatted: this.formatDate(
+        new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10)
+      ),
+      menu: false,
+      modal: false,
+      menu2: false,
+      sensor: null,
+      sensorRules: [(v) => !!v || 'Necessário selecionar um sensor.'],
+      dateRules: [(v) => !!v || 'Necessário informar uma data.'],
+      chartData: {
+        labels: [
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+        ],
+        datasets: [
+          {
+            label: 'PM 2.5',
+            backgroundColor: '#f87979',
+            data: [10, 39, 10, 40, 39, 80, 40],
+          },
+        ],
+      },
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          y: {
+            min: 0,
+            max: 600,
+          },
+          x: {
+            min: 0,
+          },
         },
-      ],
-    },
-    chartOptions: {
-      responsive: true,
-      maintainAspectRatio: true,
-    },
-  }),
+      },
+    };
+  },
 };
 </script>
