@@ -13,6 +13,7 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SensorDataSerializer
     filterset_class = SensorDataFilter
     permission_classes = []
+    pagination_class = None
 
     @action(methods=['get'], detail=False)
     def list_sensors(self, request, *args, **kwargs):
@@ -29,4 +30,4 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         sensors = self.get_queryset().filter(device_name__iexact=id_sensor,
                                              object__icontains=date)
         serializer = SensorsSerializer(sensors, many=True)
-        return JsonResponse(serializer.data, status=HTTP_200_OK)
+        return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
