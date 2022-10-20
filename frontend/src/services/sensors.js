@@ -7,7 +7,7 @@ async function getSensors() {
 
 async function getReadingsBySensorId({ idSensor, date }) {
   const { data } = await httpClient.get(
-    `/sensordata/?sensor=${idSensor}&date=${date}`
+    `/sensordata/get_readings/?id_sensor=${idSensor}&date=${date}`
   );
   return data;
 }

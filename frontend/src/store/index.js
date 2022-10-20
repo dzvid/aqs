@@ -9,7 +9,23 @@ const store = new Vuex.Store({
     sensors: [],
     sensorReadings: [],
   },
-  getters: {},
+  getters: {
+    pm25Data: (state) =>
+      state.sensorReadings
+        .filter((reading) => reading.object !== null)
+        .map((reading) => reading.object.data.pm2_5),
+    pm25Labels: (state) =>
+      state.sensorReadings
+        .filter((reading) => reading.object !== null)
+        .map((reading) => {
+          const utcDate = `${reading.object.data.dt_collected_at}Z`;
+
+          const date = new Date(utcDate).toLocaleDateString('pt-BR');
+          const hour = new Date(utcDate).toLocaleTimeString('pt-BR');
+
+          return `${date} ${hour}`;
+        }),
+  },
   mutations: {
     SET_SENSORS(state, payload) {
       state.sensors = payload;
