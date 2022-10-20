@@ -1,5 +1,7 @@
+from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.status import HTTP_200_OK
 
 from sensordata.filters import SensorDataFilter
 from sensordata.models import SensorData
@@ -27,4 +29,4 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         sensors = self.get_queryset().filter(device_name__iexact=id_sensor,
                                              object__icontains=date)
         serializer = SensorsSerializer(sensors, many=True)
-        return self.get_paginated_response(serializer.data)
+        return JsonResponse(serializer.data, status=HTTP_200_OK)
