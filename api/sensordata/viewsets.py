@@ -26,7 +26,7 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         id_sensor = request.query_params.get('id_sensor', None)
         date = request.query_params.get('date', None)
 
-        sensors = self.get_queryset().filter(device_name__iexact=id_sensor,
+        readings = self.get_queryset().filter(device_name__iexact=id_sensor,
                                              object__icontains=date)
-        serializer = SensorsSerializer(sensors, many=True)
+        serializer = SensorDataSerializer(readings, many=True)
         return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
