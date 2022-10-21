@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -26,6 +28,10 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         id_sensor = request.query_params.get('id_sensor', None)
         date = request.query_params.get('date', None)
 
-        readings = self.get_queryset().filter(device_name__iexact=id_sensor)
+        start_date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
+        end_date = start_date + timedelta(days=1)
+
+        readings = self.get_queryset().filter(device_name__iexact=id_sensor,
+                                              object__data__dt_collected_at__range=[start_date, end_date])
         serializer = SensorDataSerializer(readings, many=True)
         return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
