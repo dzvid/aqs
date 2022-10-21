@@ -11,7 +11,7 @@ from sensordata.serializers import SensorDataSerializer, SensorsSerializer
 class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SensorData.objects.all()
     serializer_class = SensorDataSerializer
-    filterset_class = SensorDataFilter
+    # filterset_class = SensorDataFilter
     permission_classes = []
 
     @action(methods=['get'], detail=False)
