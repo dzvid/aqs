@@ -50,5 +50,5 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
                 if start_date < reading_date < end_date:
                     readings_in_date.append(reading)
 
-        print('finished')
-        return JsonResponse(readings_in_date, status=HTTP_200_OK, safe=False)
+        serializer = SensorDataSerializer(readings_in_date, many=True)
+        return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
