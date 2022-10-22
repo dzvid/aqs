@@ -34,21 +34,14 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         readings = self.get_queryset() \
             .filter(device_name__iexact=id_sensor) \
             .order_by('object__data__dt_collected_at')
-        # .filter(device_name__iexact=id_sensor,
-        #         object__data__dt_collected_at__gte=str(start_date),
-        #         object__data__dt_collected_at__lte=str(end_date)) \
-        # .order_by('object__data__dt_collected_at')
 
         readings_in_date = []
         for reading in readings:
-            print(reading.id)
             if reading.object is not None:
                 data = reading.object.get('data', None)
-                print(reading.object)
-                print(data)
                 reading_date = datetime.strptime(data['dt_collected_at'], '%Y-%m-%dT%H:%M:%SZ')
                 if start_date < reading_date < end_date:
                     readings_in_date.append(reading)
 
         serializer = SensorDataSerializer(readings_in_date, many=True)
-        return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
+        return JsonResponse(serializer.data, status=HTTP_200_OK)
