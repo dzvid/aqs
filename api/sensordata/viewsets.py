@@ -41,6 +41,7 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
 
         readings_in_date = []
         for reading in readings:
+            print(reading.id)
             if reading.object:
                 data = reading.object.get('data', None)
                 print(reading.object)

@@ -7,7 +7,7 @@ class SensorData(models.Model):
     object = models.JSONField(null=True)
 
     def __str__(self):
-        return self.device_name
+        return self.id
 
     class Meta:
         db_table = 'device_up'
