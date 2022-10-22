@@ -20,13 +20,11 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SensorDataSerializer
     # filterset_class = SensorDataFilter
     permission_classes = []
-    pagination_class = PaginationNone
 
     @action(methods=['get'], detail=False)
     def list_sensors(self, request, *args, **kwargs):
         sensors = self.get_queryset().values('device_name').distinct()
-        page = self.paginate_queryset(sensors)
-        serializer = SensorsSerializer(page, many=True)
+        serializer = SensorsSerializer(sensors, many=True)
         return self.get_paginated_response(serializer.data)
 
     @action(methods=['get'], detail=False)
