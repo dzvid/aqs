@@ -41,9 +41,10 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
 
         readings_in_date = []
         for reading in readings:
-            print(reading)
-            data = reading.object.get('data', None)
-            if data:
+            if reading.object:
+                data = reading.object.get('data', None)
+                print(reading.object)
+                print(data)
                 reading_date = datetime.strptime(data['dt_collected_at'], '%Y-%m-%dT%H:%M:%SZ')
                 if start_date < reading_date < end_date:
                     readings_in_date.append(reading)
