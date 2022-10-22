@@ -31,12 +31,10 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         start_date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
         end_date = start_date + timedelta(days=1)
 
-        print(self.get_queryset().filter().first())
-
         readings = self.get_queryset() \
             .filter(device_name__iexact=id_sensor,
-                    object__data__dt_collected_at__gte=start_date,
-                    object__data__dt_collected_at__lte=end_date) \
+                    object__data__dt_collected_at__gte=str(end_date),
+                    object__data__dt_collected_at__lte=str(start_date) \
             .order_by('object__data__dt_collected_at')
         serializer = SensorDataSerializer(readings, many=True)
         return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
