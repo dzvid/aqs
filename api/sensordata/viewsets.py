@@ -50,4 +50,4 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
                     readings_in_date.append(reading)
 
         serializer = SensorDataSerializer(readings_in_date, many=True)
-        return JsonResponse(serializer.data, status=HTTP_200_OK)
+        return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
