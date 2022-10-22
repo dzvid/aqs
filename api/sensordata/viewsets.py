@@ -42,7 +42,7 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         readings_in_date = []
         for reading in readings:
             print(reading.id)
-            if reading.object:
+            if reading.object is not None:
                 data = reading.object.get('data', None)
                 print(reading.object)
                 print(data)
@@ -50,4 +50,5 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
                 if start_date < reading_date < end_date:
                     readings_in_date.append(reading)
 
+        print('finished')
         return JsonResponse(readings_in_date, status=HTTP_200_OK, safe=False)
