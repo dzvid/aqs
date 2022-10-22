@@ -33,8 +33,8 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
 
         readings = self.get_queryset() \
             .filter(device_name__iexact=id_sensor,
-                    object__data__dt_collected_at__gte=str(end_date),
-                    object__data__dt_collected_at__lte=str(start_date)) \
+                    object__data__dt_collected_at__gte=str(start_date),
+                    object__data__dt_collected_at__lte=str(end_date)) \
             .order_by('object__data__dt_collected_at')
 
         serializer = SensorDataSerializer(readings, many=True)
