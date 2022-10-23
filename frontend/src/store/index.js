@@ -1,4 +1,5 @@
 import api from '@/services';
+import { format, parseISO } from 'date-fns';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -6,6 +7,7 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
+    date: null,
     sensors: [],
     sensorReadings: [],
   },
@@ -18,15 +20,22 @@ const store = new Vuex.Store({
       state.sensorReadings
         .filter((reading) => reading.object !== null)
         .map((reading) => {
-          const utcDate = `${reading.object.data.dt_collected_at}Z`;
+          const utcDate = reading.object.data.dt_collected_at;
 
           const date = new Date(utcDate).toLocaleDateString('pt-BR');
           const hour = new Date(utcDate).toLocaleTimeString('pt-BR');
 
           return `${date} ${hour}`;
         }),
+    dateFormatted: (state) =>
+      state.date ? format(parseISO(state.date), 'dd/MM/yyyy') : state.date,
+    dateISO: (state) =>
+      state.date ? parseISO(state.date).toISOString() : state.date,
   },
   mutations: {
+    SET_STATE_BY_KEY(state, { key, value }) {
+      state[key] = value;
+    },
     SET_SENSORS(state, payload) {
       state.sensors = payload;
     },
@@ -35,13 +44,16 @@ const store = new Vuex.Store({
     },
   },
   actions: {
+    setStateByKey({ commit }, payload) {
+      commit('SET_STATE_BY_KEY', payload);
+    },
     async fetchSensors({ commit }) {
       const { results } = await api.sensors.getSensors();
       commit('SET_SENSORS', results);
     },
     async fetchReadingsBySensorId({ commit }, payload) {
-      const { results } = await api.sensors.getReadingsBySensorId(payload);
-      commit('SET_SENSOR_READINGS', results);
+      const data = await api.sensors.getReadingsBySensorId(payload);
+      commit('SET_SENSOR_READINGS', data);
     },
   },
 });

@@ -9,6 +9,7 @@
     :styles="styles"
     :width="width"
     :height="height"
+    ref="refLineChart"
   />
 </template>
 
@@ -79,3 +80,5 @@ export default {
   },
 };
 </script>
+
+<style scoped></style>
