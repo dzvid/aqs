@@ -12,11 +12,7 @@ const store = new Vuex.Store({
     sensorReadings: [],
   },
   getters: {
-    pm25Data: (state) =>
-      state.sensorReadings
-        .filter((reading) => reading.object !== null)
-        .map((reading) => reading.object.data.pm2_5),
-    pm25Labels: (state) =>
+    dataLabels: (state) =>
       state.sensorReadings
         .filter((reading) => reading.object !== null)
         .map((reading) => {
@@ -27,6 +23,27 @@ const store = new Vuex.Store({
 
           return `${date} ${hour}`;
         }),
+    pm25Data: (state) =>
+      state.sensorReadings
+        .filter((reading) => reading.object !== null)
+        .map((reading) => reading.object.data.pm2_5),
+    pm10Data: (state) =>
+      state.sensorReadings
+        .filter((reading) => reading.object !== null)
+        .map((reading) => reading.object.data.pm10),
+    temperatureData: (state) =>
+      state.sensorReadings
+        .filter((reading) => reading.object !== null)
+        .map((reading) => reading.object.data.temperature),
+    humidityData: (state) =>
+      state.sensorReadings
+        .filter((reading) => reading.object !== null)
+        .map((reading) => reading.object.data.humidity),
+    pressureData: (state) =>
+      state.sensorReadings
+        .filter((reading) => reading.object !== null)
+        .map((reading) => reading.object.data.pressure),
+
     dateFormatted: (state) =>
       state.date ? format(parseISO(state.date), 'dd/MM/yyyy') : state.date,
     dateISO: (state) =>

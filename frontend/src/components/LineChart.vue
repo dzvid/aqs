@@ -7,10 +7,9 @@
     :plugins="plugins"
     :css-classes="cssClasses"
     :styles="styles"
-    :width="width"
     :height="height"
-    ref="refLineChart"
   />
+  <!-- width="" -->
 </template>
 
 <script>

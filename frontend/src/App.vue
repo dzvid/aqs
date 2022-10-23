@@ -100,44 +100,92 @@
         <v-row dense>
           <v-col cols="12">
             <v-card class="mx-auto" flat outlined>
-              <v-card-title> PM 2.5 </v-card-title>
+              <v-card-title> PM 2.5 (µg/m³) </v-card-title>
               <v-card-text>
-                <LineChart
-                  :chartOptions="chartOptions"
-                  :chartData="chartData"
-                />
+                <div style="width: 100%; overflow-x: auto; overflow-y: hidden">
+                  <div style="width: 625rem">
+                    <LineChart
+                      :chartOptions="chartOptions"
+                      :chartData="chartDataPM25"
+                    />
+                  </div>
+                </div>
               </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-
-        <!-- <v-row dense>
-          <v-col cols="12">
-            <v-card class="mx-auto" flat>
-              <v-list-item two-line>
-                <v-list-item-content>
-                  <v-list-item-title class="text-h5">
-                    Temperatura
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
             </v-card>
           </v-col>
         </v-row>
 
         <v-row dense>
           <v-col cols="12">
-            <v-card class="mx-auto" flat>
-              <v-list-item two-line>
-                <v-list-item-content>
-                  <v-list-item-title class="text-h5">
-                    Umidade
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+            <v-card class="mx-auto" flat outlined>
+              <v-card-title> PM 10 (µg/m³) </v-card-title>
+              <v-card-text>
+                <div style="width: 100%; overflow-x: auto; overflow-y: hidden">
+                  <div style="width: 625rem">
+                    <LineChart
+                      :chartOptions="chartOptions"
+                      :chartData="chartDataPM10"
+                    />
+                  </div>
+                </div>
+              </v-card-text>
             </v-card>
           </v-col>
-        </v-row> -->
+        </v-row>
+
+        <v-row dense>
+          <v-col cols="12">
+            <v-card class="mx-auto" flat outlined>
+              <v-card-title> Temperatura (°C) </v-card-title>
+              <v-card-text>
+                <div style="width: 100%; overflow-x: auto; overflow-y: hidden">
+                  <div style="width: 625rem">
+                    <LineChart
+                      :chartOptions="chartOptions"
+                      :chartData="chartDataTemperature"
+                    />
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-row dense>
+          <v-col cols="12">
+            <v-card class="mx-auto" flat outlined>
+              <v-card-title> Humidade Relativa (%) </v-card-title>
+              <v-card-text>
+                <div style="width: 100%; overflow-x: auto; overflow-y: hidden">
+                  <div style="width: 625rem">
+                    <LineChart
+                      :chartOptions="chartOptions"
+                      :chartData="chartDataHumidity"
+                    />
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-row dense>
+          <v-col cols="12">
+            <v-card class="mx-auto" flat outlined>
+              <v-card-title> Pressão atmosférica (hPa) </v-card-title>
+              <v-card-text>
+                <div style="width: 100%; overflow-x: auto; overflow-y: hidden">
+                  <div style="width: 625rem">
+                    <LineChart
+                      :chartOptions="chartOptions"
+                      :chartData="chartDataPressure"
+                    />
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
   </v-app>
@@ -173,10 +221,19 @@ export default {
   },
   computed: {
     ...mapState(['sensors', 'date']),
-    ...mapGetters(['pm25Data', 'pm25Labels', 'dateFormatted', 'dateISO']),
-    chartData() {
+    ...mapGetters([
+      'dataLabels',
+      'pm25Data',
+      'pm10Data',
+      'temperatureData',
+      'humidityData',
+      'pressureData',
+      'dateFormatted',
+      'dateISO',
+    ]),
+    chartDataPM25() {
       return {
-        labels: this.pm25Labels,
+        labels: this.dataLabels,
         datasets: [
           {
             label: 'PM 2.5',
@@ -186,10 +243,58 @@ export default {
         ],
       };
     },
+    chartDataPM10() {
+      return {
+        labels: this.dataLabels,
+        datasets: [
+          {
+            label: 'PM 10',
+            backgroundColor: '#efaafe',
+            data: this.pm10Data,
+          },
+        ],
+      };
+    },
+    chartDataTemperature() {
+      return {
+        labels: this.dataLabels,
+        datasets: [
+          {
+            label: 'Temperatura',
+            backgroundColor: '#efaafe',
+            data: this.temperatureData,
+          },
+        ],
+      };
+    },
+    chartDataHumidity() {
+      return {
+        labels: this.dataLabels,
+        datasets: [
+          {
+            label: 'Humidade',
+            backgroundColor: '#efaafe',
+            data: this.humidityData,
+          },
+        ],
+      };
+    },
+    chartDataPressure() {
+      return {
+        labels: this.dataLabels,
+        datasets: [
+          {
+            label: 'Pressão atmosférica',
+            backgroundColor: '#efaafe',
+            data: this.pressureData,
+          },
+        ],
+      };
+    },
     chartOptions() {
       return {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         scales: {
           y: {
             min: 0,
