@@ -80,9 +80,9 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         # 4 - Calculo AIQ para poluentes
         pm25_calculated_aiq = get_pm25_aiq(pm25_average_measured_conc=pm25_24hrs_avg)
         pm10_calculated_aiq = get_pm10_aiq(pm10_average_measured_conc=pm10_24hrs_avg)
-        aiq = pm25_calculated_aiq['aiq'] \
+        aiq = pm25_calculated_aiq \
             if pm25_calculated_aiq['aiq'] >= pm10_calculated_aiq['aiq'] \
-            else pm10_calculated_aiq['aiq']
+            else pm10_calculated_aiq
 
         data = {
             'aiq': aiq,
