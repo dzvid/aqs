@@ -80,6 +80,10 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         # 4 - Calculo AIQ para poluentes
         pm25_calculated_aiq = get_pm25_aiq(pm25_average_measured_conc=pm25_24hrs_avg)
         pm10_calculated_aiq = get_pm10_aiq(pm10_average_measured_conc=pm10_24hrs_avg)
-        data = {'pm25': pm25_calculated_aiq, 'pm10': pm10_calculated_aiq}
+        data = {
+            'pm25': pm25_calculated_aiq,
+            'pm10': pm10_calculated_aiq,
+            'interval': {'start_date': start_date, 'end_date': end_date}
+        }
 
         return JsonResponse(data, status=HTTP_200_OK, safe=False)
