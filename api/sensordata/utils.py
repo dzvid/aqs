@@ -158,7 +158,7 @@ def get_pm25_aiq(pm25_average_measured_conc=None):
                              pm25_conc['upper_limit'],
                              pm25_average_measured_conc)
     return {'aiq': pm25_aiq, 'index_color': pm25_index['color'],
-            'index_classification': pm25_index['classification']}
+            'index_classification': pm25_index['classification'], 'pollutant': pm25_conc['pollutant']}
 
 
 def get_pm10_interval_and_concentration(pm10_average_measured_conc=None):
@@ -183,4 +183,4 @@ def get_pm10_aiq(pm10_average_measured_conc=None):
                              pm10_conc['upper_limit'],
                              pm10_average_measured_conc)
     return {'aiq': pm10_aiq, 'index_color': pm10_index['color'],
-            'index_classification': pm10_index['classification']}
+            'index_classification': pm10_index['classification'], 'pollutant': pm10_conc['pollutant']}
