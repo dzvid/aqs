@@ -9,7 +9,7 @@ from rest_framework.status import HTTP_200_OK
 # from sensordata.filters import SensorDataFilter
 from sensordata.models import SensorData
 from sensordata.serializers import SensorDataSerializer, SensorsSerializer
-from sensordata.utils import get_average, get_pm25_interval_and_concentration, get_pm25_aiq
+from sensordata.utils import get_average, get_pm25_interval_and_concentration, get_pm25_aiq, get_pm10_aiq
 
 
 class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
@@ -27,6 +27,7 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(methods=['get'], detail=False)
     def get_readings(self, request, *args, **kwargs):
+        # medidas de um dia escolhido
         id_sensor = request.query_params.get('id_sensor', None)
         date = request.query_params.get('date', None)
 
@@ -49,7 +50,8 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
 
     @action(methods=['get'], detail=False)
-    def get_aqi(self, request, *args, **kwargs):
+    def get_aqi_last24hrs(self, request, *args, **kwargs):
+        # ultimas 24 horas
         id_sensor = request.query_params.get('id_sensor', None)
         date = request.query_params.get('date', None)
 
@@ -75,11 +77,9 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         # 3 - Calcular media do periodo para cada poluente (pm10_avg_measured_pollution)
         pm10_24hrs_avg = get_average(readings=readings_in_interval, pollutant='pm10')
 
-        # 4 - Consultar indice inicial e final para o poluente e concentracao medida
-        pm25_calculated_aiq = get_pm25_aiq(pm25_avg_measured_pollution=pm25_24hrs_avg)
+        # 4 - Calculo AIQ para poluentes
+        pm25_calculated_aiq = get_pm25_aiq(pm25_average_measured_conc=pm25_24hrs_avg)
+        pm10_calculated_aiq = get_pm10_aiq(pm10_average_measured_conc=pm10_24hrs_avg)
+        data = { pm25_calculated_aiq, pm10_calculated_aiq}
 
-
-        # 5 - Consultar concentração inicial e final do intervalo
-
-        serializer = SensorDataSerializer(readings_in_date, many=True)
-        return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
+        return JsonResponse(data, status=HTTP_200_OK, safe=False)
