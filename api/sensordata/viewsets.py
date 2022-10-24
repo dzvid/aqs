@@ -9,6 +9,7 @@ from rest_framework.status import HTTP_200_OK
 # from sensordata.filters import SensorDataFilter
 from sensordata.models import SensorData
 from sensordata.serializers import SensorDataSerializer, SensorsSerializer
+from sensordata.utils import get_average, get_pm25_interval_and_concentration, get_pm25_aiq
 
 
 class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
@@ -43,6 +44,42 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
                 reading_date = datetime.strptime(data['dt_collected_at'], '%Y-%m-%dT%H:%M:%SZ')
                 if start_date < reading_date < end_date:
                     readings_in_date.append(reading)
+
+        serializer = SensorDataSerializer(readings_in_date, many=True)
+        return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
+
+    @action(methods=['get'], detail=False)
+    def get_aqi(self, request, *args, **kwargs):
+        id_sensor = request.query_params.get('id_sensor', None)
+        date = request.query_params.get('date', None)
+
+        start_date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
+        end_date = start_date + timedelta(days=-1)
+
+        readings = self.get_queryset() \
+            .filter(device_name__iexact=id_sensor) \
+            .order_by('object__data__dt_collected_at')
+
+        # 1 - Pegar 24 horas de leitura para pm25 e pm10
+        readings_in_interval = []
+        for reading in readings:
+            if reading.object is not None:
+                data = reading.object.get('data', None)
+                reading_date = datetime.strptime(data['dt_collected_at'], '%Y-%m-%dT%H:%M:%SZ')
+                if start_date > reading_date > end_date:
+                    readings_in_interval.append(data)
+
+        # 2 - Calcular media do periodo para cada poluente (pm25_avg_measured_pollution)
+        pm25_24hrs_avg = get_average(readings=readings_in_interval, pollutant='pm2_5')
+
+        # 3 - Calcular media do periodo para cada poluente (pm10_avg_measured_pollution)
+        pm10_24hrs_avg = get_average(readings=readings_in_interval, pollutant='pm10')
+
+        # 4 - Consultar indice inicial e final para o poluente e concentracao medida
+        pm25_calculated_aiq = get_pm25_aiq(pm25_avg_measured_pollution=pm25_24hrs_avg)
+
+
+        # 5 - Consultar concentração inicial e final do intervalo
 
         serializer = SensorDataSerializer(readings_in_date, many=True)
         return JsonResponse(serializer.data, status=HTTP_200_OK, safe=False)
