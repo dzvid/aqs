@@ -39,35 +39,40 @@ pm10_good_interval = {
     'upper_limit': 50,
     'lower_limit': 0,
     'color': 'green',
-    'classification': 'good'
+    'classification': 'good',
+    'pollutant': 'pm10'
 }
 
 pm10_moderated_interval = {
     'upper_limit': 100,
     'lower_limit': 51,
     'color': 'yellow',
-    'classification': 'moderated'
+    'classification': 'moderated',
+    'pollutant': 'pm10'
 }
 
 pm10_bad_interval = {
     'upper_limit': 150,
     'lower_limit': 101,
     'color': 'orange',
-    'classification': 'bad'
+    'classification': 'bad',
+    'pollutant': 'pm10'
 }
 
 pm10_very_bad_interval = {
     'upper_limit': 250,
     'lower_limit': 151,
     'color': 'red',
-    'classification': 'very_bad'
+    'classification': 'very_bad',
+    'pollutant': 'pm10'
 }
 
 pm10_terrible_interval = {
     'upper_limit': 600,
     'lower_limit': 251,
     'color': 'purple',
-    'classification': 'terrible'
+    'classification': 'terrible',
+    'pollutant': 'pm10'
 }
 
 # PM25 levels
@@ -75,35 +80,40 @@ pm25_good_interval = {
     'upper_limit': 25,
     'lower_limit': 0,
     'color': 'green',
-    'classification': 'good'
+    'classification': 'good',
+    'pollutant': 'pm25'
 }
 
 pm25_moderated_interval = {
     'upper_limit': 50,
     'lower_limit': 26,
     'color': 'yellow',
-    'classification': 'moderated'
+    'classification': 'moderated',
+    'pollutant': 'pm25'
 }
 
 pm25_bad_interval = {
     'upper_limit': 75,
     'lower_limit': 51,
     'color': 'orange',
-    'classification': 'bad'
+    'classification': 'bad',
+    'pollutant': 'pm25'
 }
 
 pm25_very_bad_interval = {
     'upper_limit': 125,
     'lower_limit': 76,
     'color': 'red',
-    'classification': 'very_bad'
+    'classification': 'very_bad',
+    'pollutant': 'pm25'
 }
 
 pm25_terrible_interval = {
     'upper_limit': 300,
     'lower_limit': 126,
     'color': 'purple',
-    'classification': 'terrible'
+    'classification': 'terrible',
+    'pollutant': 'pm25'
 }
 
 
