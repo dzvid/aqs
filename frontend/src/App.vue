@@ -69,15 +69,22 @@
                             <div>{{ aiqData.aiq.aiq }}</div>
                           </v-card-subtitle>
                           <v-card-text
-                            class="text-h4 font-weight-medium d-inline-block white--text mt-4 d-flex align-center"
+                            class="text-h6 font-weight-medium d-inline-block white--text mt-4 d-flex align-center"
                           >
-                            <span>
-                              {{
-                                getAiqClassification(
-                                  aiqData.aiq.index_classification
-                                ).text
-                              }}
-                            </span>
+                            <v-row dense>
+                              <v-col cols="12">
+                                <span> Poluente: </span>
+                                {{ getPollutant(aiqData.aiq.pollutant) }}
+                              </v-col>
+                              <v-col cols="12">
+                                <span> Classificação: </span>
+                                {{
+                                  getAiqClassification(
+                                    aiqData.aiq.index_classification
+                                  ).text
+                                }}
+                              </v-col>
+                            </v-row>
 
                             <v-spacer></v-spacer>
 
@@ -417,6 +424,10 @@ export default {
     itemRowBackground(item) {
       return item.color;
     },
+    getPollutant(pollutant) {
+      if (pollutant === 'pm25') return 'MP 2.5';
+      return 'MP 10';
+    },
     getAiqClassification(aiqClassification) {
       if (aiqClassification === 'good') {
         return { class: 'green', text: 'N1 - Boa' };
@@ -510,7 +521,9 @@ export default {
         {
           text: 'Classificação IQAr MP 2.5 µg/m³',
           icon: 'mdi-thermometer',
-          value: this.aiqData.pm25.index_classification,
+          value: this.getAiqClassification(
+            this.aiqData.pm25.index_classification
+          ).text,
         },
         {
           text: 'IQAr MP 10 µg/m³',
@@ -520,7 +533,9 @@ export default {
         {
           text: 'Classificação IQAr MP 10 µg/m³',
           icon: 'mdi-thermometer',
-          value: this.aiqData.pm10.index_classification,
+          value: this.getAiqClassification(
+            this.aiqData.pm10.index_classification
+          ).text,
         },
       ];
     },
