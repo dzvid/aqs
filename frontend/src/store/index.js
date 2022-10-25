@@ -10,6 +10,31 @@ const store = new Vuex.Store({
     date: null,
     sensors: [],
     sensorReadings: [],
+    aiqData: null,
+    // {
+    //   aiq: {
+    //     aiq: null,
+    //     index_color: '',
+    //     index_classification: '',
+    //     pollutant: '',
+    //   },
+    //   pm25: {
+    //     aiq: null,
+    //     index_color: '',
+    //     index_classification: '',
+    //     pollutant: '',
+    //   },
+    //   pm10: {
+    //     aiq: null,
+    //     index_color: '',
+    //     index_classification: '',
+    //     pollutant: '',
+    //   },
+    //   interval: {
+    //     start_date: '',
+    //     end_date: '',
+    //   },
+    // },
   },
   getters: {
     dataLabels: (state) =>
@@ -71,6 +96,10 @@ const store = new Vuex.Store({
     async fetchReadingsBySensorId({ commit }, payload) {
       const data = await api.sensors.getReadingsBySensorId(payload);
       commit('SET_SENSOR_READINGS', data);
+    },
+    async fetchAIQLast24Hours({ commit }, payload) {
+      const data = await api.sensors.getAIQLast24Hours(payload);
+      commit('SET_STATE_BY_KEY', { key: 'aiqData', value: data });
     },
   },
 });

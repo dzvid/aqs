@@ -12,7 +12,15 @@ async function getReadingsBySensorId({ idSensor, date }) {
   return data;
 }
 
+async function getAIQLast24Hours({ idSensor, date }) {
+  const { data } = await httpClient.get(
+    `/sensordata/get_aqi_last24hrs/?id_sensor=${idSensor}&date=${date}`
+  );
+  return data;
+}
+
 export default {
   getSensors,
   getReadingsBySensorId,
+  getAIQLast24Hours,
 };
