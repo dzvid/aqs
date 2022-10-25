@@ -64,9 +64,12 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
 
         # 1 - Pegar 24 horas de leitura para pm25 e pm10
         readings_in_interval = []
+        location = {'latitude': None, 'longitude': None}
         for reading in readings:
             if reading.object is not None:
                 data = reading.object.get('data', None)
+                # TODO: improve how to get sensor location
+                location = { 'latitude': data['lat'], 'longitude': data['long']}
                 reading_date = datetime.strptime(data['dt_collected_at'], '%Y-%m-%dT%H:%M:%SZ')
                 if start_date > reading_date > end_date:
                     readings_in_interval.append(data)
@@ -88,7 +91,8 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
             'aiq': aiq,
             'pm25': pm25_calculated_aiq,
             'pm10': pm10_calculated_aiq,
-            'interval': {'start_date': start_date, 'end_date': end_date}
+            'interval': {'start_date': start_date, 'end_date': end_date},
+            'location': location,
         }
 
         return JsonResponse(data, status=HTTP_200_OK, safe=False)
