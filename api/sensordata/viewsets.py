@@ -56,7 +56,7 @@ class SensorDataViewSet(viewsets.ReadOnlyModelViewSet):
         date = request.query_params.get('date', None)
 
         start_date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
-        end_date = start_date + timedelta(days=-1)
+        end_date = start_date - timedelta(days=1)
 
         readings = self.get_queryset() \
             .filter(device_name__iexact=id_sensor) \
