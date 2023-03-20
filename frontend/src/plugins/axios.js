@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const httpClient = axios.create({
-  baseURL: process.env.VUE_APP_API_BASE_URL || 'http://192.168.0.3:9000/api',
+  baseURL: process.env.VUE_APP_API_BASE_URL || 'http://192.168.0.2:9000/api',
   responseType: 'json',
   headers: {
     'Content-Type': 'application/json',

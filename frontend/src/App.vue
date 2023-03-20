@@ -503,15 +503,15 @@ export default {
         {
           text: 'Intervalo de tempo',
           icon: 'mdi-calendar',
-          value: `${new Date(this.aiqData.interval.end_date).toLocaleDateString(
-            'pt-BR'
-          )} ${new Date(this.aiqData.interval.end_date).toLocaleTimeString(
-            'pt-BR'
-          )} - ${new Date(this.aiqData.interval.start_date).toLocaleDateString(
-            'pt-BR'
-          )} ${new Date(this.aiqData.interval.start_date).toLocaleTimeString(
-            'pt-BR'
-          )}`,
+          value: `${new Date(
+            this.aiqData.interval.end_date + 'Z'
+          ).toLocaleDateString('pt-BR')} ${new Date(
+            this.aiqData.interval.end_date + 'Z'
+          ).toLocaleTimeString('pt-BR')} - ${new Date(
+            this.aiqData.interval.start_date + 'Z'
+          ).toLocaleDateString('pt-BR')} ${new Date(
+            this.aiqData.interval.start_date + 'Z'
+          ).toLocaleTimeString('pt-BR')}`,
         },
         {
           text: 'IQAr MP 2.5 µg/m³',
